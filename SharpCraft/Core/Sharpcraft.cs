@@ -22,30 +22,43 @@ namespace MyoKun.SharpCraft.Core
 
         public Boolean Running;
 
+        private string Version = "0.0.01-dev";
+
         public Sharpcraft(string Username)
         {
             Instance = this;
             this.Username = Username;
             Writer.Write("Username: " + Username, "INFO");
-            Console.WriteLine(Username);
         }
 
         private void StartGame()
         {
-            Window = new SharpcraftWindow(800, 600, "Sharpcraft", Instance);
+            Writer.Write("Sharpcraft starting", "FINE");
+            Window = new SharpcraftWindow(800, 600, "Sharpcraft " + this.GetVersion(), Instance);
+            try
+            {
+                Window.Run(30);
+            }
+            catch (NotSupportedException e)
+            {
+                Writer.Write(e.ToString(), "SEVERE");
+                this.StopGame(0x03);
+            }
+            catch (ApplicationException e)
+            {
+                Writer.Write(e.ToString(), "SEVERE");
+                this.StopGame(0x03);
+            }
+            catch (Exception e)
+            {
+                Writer.Write(e.ToString(), "SEVERE");
+                this.StopGame(0x01);
+            }
         }
 
         private void RunGameLoop()
         {
 
-        }
-
-        protected void handleKey(object sender, KeyboardKeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                this.StopGame(0x00);
-            }
         }
 
         public void StopGame(int ExitCode)
@@ -78,12 +91,13 @@ namespace MyoKun.SharpCraft.Core
                     {
                         try
                         {
-                            //this.RunGameLoop();
+                            this.RunGameLoop();
                         }
                         catch (OutOfMemoryException e)
                         {
                             Writer.Write(e.ToString(), "SEVERE");
                             this.StopGame(0x02);
+                            break;
                         }
 
                         continue;
@@ -93,7 +107,13 @@ namespace MyoKun.SharpCraft.Core
             catch (Exception e)
             {
                 Writer.Write(e.ToString(), "SEVERE");
+                this.StopGame(0x01);
             }
+        }
+
+        public string GetVersion()
+        {
+            return Version;
         }
     }
 }
