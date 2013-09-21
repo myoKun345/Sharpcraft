@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SharpCraft\Core\Sharpcraft.cs" />
+    <Compile Include="SharpCraft\Core\SharpcraftWindow.cs" />
     <Compile Include="SharpCraft\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
