@@ -20,7 +20,7 @@ namespace MyoKun.SharpCraft.Core
         int vertex_buffer_object, color_buffer_object, element_buffer_object;
 
         public SharpcraftWindow(int width, int height, string title, Sharpcraft game)
-            : base(width, height, new GraphicsMode(32, 0, 0, 4), title)
+            : base(width, height, new GraphicsMode(32, 32, 0, 4), title)
         {
             this.Game = game;
             Keyboard.KeyDown += HandleKey;
@@ -101,36 +101,55 @@ namespace MyoKun.SharpCraft.Core
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit |
-                     ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Matrix4 lookat = Matrix4.LookAt(0, 5, 5, 0, 0, 0, 0, 1, 0);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref lookat);
+            GL.PushMatrix();
 
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.ColorArray);
+            GL.Translate(0, 0, 0);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vertex_buffer_object);
-            GL.VertexPointer(3, VertexPointerType.Float, 0, IntPtr.Zero);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, color_buffer_object);
-            GL.ColorPointer(4, ColorPointerType.UnsignedByte, 0, IntPtr.Zero);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, element_buffer_object);
+            GL.Begin(BeginMode.Quads);
 
-            GL.DrawElements(BeginMode.Triangles, shape.Indices.Length,
-                DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.Color4(1F, 1F, 1F, 1F);
 
-            GL.DrawArrays(BeginMode.Points, 0, shape.Vertices.Length);
+            GL.Normal3(0F, 0F, -1F);
+            GL.Vertex3(1F, -1F, -1F);
+            GL.Vertex3(-1F, -1F, -1F);
+            GL.Vertex3(-1F, 1F, -1F);
+            GL.Vertex3(1F, 1F, -1F);
 
-            GL.DisableClientState(ArrayCap.VertexArray);
-            GL.DisableClientState(ArrayCap.ColorArray);
+            GL.Normal3(0F, 0F, 1F);
+            GL.Vertex3(-1F, -1F, 1F);
+            GL.Vertex3(1F, -1F, 1F);
+            GL.Vertex3(1F, 1F, 1F);
+            GL.Vertex3(-1F, 1F, 1F);
 
+            GL.Normal3(1F, 0F, 0F);
+            GL.Vertex3(1F, -1F, 1F);
+            GL.Vertex3(1F, -1F, -1F);
+            GL.Vertex3(1F, 1F, -1F);
+            GL.Vertex3(1F, 1F, 1F);
 
-            //int error = GL.GetError();
-            //if (error != 0)
-            //    Debug.Print(Glu.ErrorString(Glu.Enums.ErrorCode.INVALID_OPERATION));
+            GL.Normal3(-1F, 0F, 0F);
+            GL.Vertex3(-1F, -1F, -1F);
+            GL.Vertex3(-1F, -1F, 1F);
+            GL.Vertex3(-1F, 1F, 1F);
+            GL.Vertex3(-1F, 1F, -1F);
 
-            SwapBuffers();
+            GL.Normal3(0F, -1F, 0F);
+            GL.Vertex3(-1F, -1F, -1F);
+            GL.Vertex3(1F, -1F, -1F);
+            GL.Vertex3(1F, -1F, 1F);
+            GL.Vertex3(-1F, -1F, 1F);
+
+            GL.Normal3(0F, 1F, 0F);
+            GL.Vertex3(1F, 1F, -1F);
+            GL.Vertex3(-1F, 1F, -1F);
+            GL.Vertex3(-1F, 1F, 1F);
+            GL.Vertex3(1F, 1F, 1F);
+
+            GL.Finish();
+
+            GL.PopMatrix();
         }
 
         protected override void OnResize(EventArgs e)
